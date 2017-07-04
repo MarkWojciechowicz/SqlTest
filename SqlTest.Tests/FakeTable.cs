@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using SqlTest;
 using System.Transactions;
 
-namespace Example
+namespace SqlTest.Tests
 {
-    [TestFixture]
-    public class Sql
+    public class FakeTable
     {
         TransactionScope scope;
 
@@ -30,14 +28,14 @@ namespace Example
         }
 
         [Test]
-        public void Sql_ExecuteSetup_TableCreated()
+        public void FakeTable_ExecuteFake_CreatesFakeTable()
         {
-            //Create table
-            SqlTest.Sql.SetUp($"Create table test(Id Int);");
-
-            var result = SqlTest.Sql.GetActual("Select count(*) from Information_Schema.Tables WHERE Table_Name = 'Test'");
-
-            Assert.That(result, Is.EqualTo(1));
+            SqlTest.FakeTable.CreateShell("TestDB", "Test");
+            Assert.DoesNotThrow( 
+                delegate { SqlTest.Sql.SetUp($"Select 1 From TestDb.dbo.Test_Faked;"); }
+                );
         }
+
+        
     }
 }
