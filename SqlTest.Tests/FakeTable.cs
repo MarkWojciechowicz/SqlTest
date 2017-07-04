@@ -28,7 +28,7 @@ namespace SqlTest.Tests
         }
 
         [Test]
-        public void FakeTable_ExecuteFake_CreatesFakeTable()
+        public void FakeTable_ExecuteFakeTable_CreatesFakeTable()
         {
             SqlTest.FakeTable.CreateShell("TestDB", "Test");
             Assert.DoesNotThrow( 
@@ -36,6 +36,16 @@ namespace SqlTest.Tests
                 );
         }
 
-        
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void FakeTable_ExecuteFakeTable_IdentityHandledCorrectly(bool keepIdentity, bool expected)
+        {
+            SqlTest.FakeTable.CreateShell("TestDB", "HasIdentity", keepIdentity);
+            var actual = SqlTest.Sql.GetActual(@"SELECT c.is_identity 
+                                                FROM sys.all_columns c 
+                                                    JOIN sys.objects o on c.object_id = o.object_id
+                                                 WHERE o.name = 'HasIdentity'");
+            Assert.That(actual, Is.EqualTo(expected));
+        }
     }
 }

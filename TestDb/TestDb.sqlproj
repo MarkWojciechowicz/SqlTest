@@ -61,5 +61,10 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Test.sql" />
+    <Build Include="dbo\HasIdentity.sql" />
+    <Build Include="dbo\HasDefault.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestDb.publish.xml" />
   </ItemGroup>
 </Project>
