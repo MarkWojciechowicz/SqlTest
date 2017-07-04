@@ -41,7 +41,8 @@ namespace SqlTest
                 }
                 if (column.DefaultConstraint != null)
                 {
-                    //TODO: Implement add constraints
+                    copyofCol.AddDefaultConstraint($"{column.DefaultConstraint.Name}_fake");
+                    copyofCol.DefaultConstraint.Text = column.DefaultConstraint.Text;
                 }
                 fakeTable.Columns.Add(copyofCol);
             }
