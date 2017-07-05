@@ -50,11 +50,22 @@ namespace SqlTest
             fakeTable.Create();
         }
 
-        public static object Drop(string dbName, string schemaAndTableName, string getActual)
+        public static object Drop(string dbName, string schemaAndTableName, string getActualSql = "")
         {
-            // TODO: implement fake table drop
-            object Result =  "";
-            return Result;
+            object result =  "";
+            if(!String.IsNullOrEmpty(getActualSql))
+            {
+                result = Sql.GetActual(getActualSql);
+            }
+
+            Server server = GetServerName();
+            string schemaName = GetSchemaName(schemaAndTableName);
+            string tableName = GetTableName(schemaAndTableName);
+            Database database = server.Databases[dbName];
+            database.Tables[tableName, schemaName].DropIfExists();
+            database.Tables[$"{tableName}_Faked", schemaName].Rename(tableName);
+
+            return result;
         }
 
         private static Server GetServerName()

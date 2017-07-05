@@ -68,5 +68,23 @@ namespace SqlTest.Tests
                                                 SELECT Description from @Description;");
             Assert.That(actual, Is.EqualTo("Test"));
         }
-     }
+
+        [Test]
+        public void FakeTable_ExecuteTableDrop_SourceTableIsRenamed()
+        {
+            SqlTest.FakeTable.CreateShell("TestDb", "Test");
+            SqlTest.FakeTable.Drop("TestDb", "Test");
+            Assert.Throws(typeof(Exception), delegate { SqlTest.Sql.GetActual("SELECT 1 FROM Test_Faked;"); });
+        }
+
+        [Test]
+        public void FakeTable_ExecuteTableDrop_ReturnsActualResult()
+        {
+            SqlTest.FakeTable.CreateShell("TestDb", "Test");
+            SqlTest.Sql.SetUp("Insert into Test (Id) Values (1);");
+            var actual = SqlTest.FakeTable.Drop("TestDb", "Test", "Select Id From Test");
+            Assert.That(actual, Is.EqualTo(1));
+
+        }
+    }
 }
