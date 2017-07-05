@@ -32,7 +32,7 @@ namespace SqlTest.Tests
         {
             SqlTest.FakeTable.CreateShell("TestDB", "Test");
             Assert.DoesNotThrow(
-                delegate { SqlTest.Sql.SetUp($"Select 1 From dbo.Test_Faked;"); }
+                delegate { SqlTest.Sql.ExecuteAdhoc($"Select 1 From dbo.Test_Faked;"); }
                 );
         }
 
@@ -41,7 +41,7 @@ namespace SqlTest.Tests
         {
             SqlTest.FakeTable.CreateShell("TestDB", "Test");
             Assert.DoesNotThrow(
-                delegate { SqlTest.Sql.SetUp($"Insert into dbo.Test (Description) Values('Test');"); }
+                delegate { SqlTest.Sql.ExecuteAdhoc($"Insert into dbo.Test (Description) Values('Test');"); }
                 );
         }
 
@@ -81,7 +81,7 @@ namespace SqlTest.Tests
         public void FakeTable_ExecuteTableDrop_ReturnsActualResult()
         {
             SqlTest.FakeTable.CreateShell("TestDb", "Test");
-            SqlTest.Sql.SetUp("Insert into Test (Id) Values (1);");
+            SqlTest.Sql.ExecuteAdhoc("Insert into Test (Id) Values (1);");
             var actual = SqlTest.FakeTable.Drop("TestDb", "Test", "Select Id From Test");
             Assert.That(actual, Is.EqualTo(1));
 

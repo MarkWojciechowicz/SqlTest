@@ -30,14 +30,14 @@ namespace SqlTest.Tests
         [Test]
         public void Sql_ExecuteSetup_NoExceptionThrown()
         {
-            SqlTest.Sql.SetUp($"Select 1;");
+            SqlTest.Sql.ExecuteAdhoc($"Select 1;");
         }
 
         [Test]
         public void Sql_ExecuteSetup_ExceptionThrown()
         {
             Assert.Throws(typeof(Exception),
-                delegate { SqlTest.Sql.SetUp($"Select 1/0;"); }
+                delegate { SqlTest.Sql.ExecuteAdhoc($"Select 1/0;"); }
             );
         }
 

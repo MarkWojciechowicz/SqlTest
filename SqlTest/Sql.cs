@@ -10,7 +10,7 @@ namespace SqlTest
 {
     public class Sql
     {
-        public static void SetUp(string sql)
+        public static void ExecuteAdhoc(string sql)
         {
             try
             {

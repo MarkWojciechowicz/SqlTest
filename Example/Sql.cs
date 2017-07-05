@@ -33,7 +33,7 @@ namespace Example
         public void Sql_ExecuteSetup_TableCreated()
         {
             //Create table
-            SqlTest.Sql.SetUp($"Create table test(Id Int);");
+            SqlTest.Sql.ExecuteAdhoc($"Create table test(Id Int);");
 
             var result = SqlTest.Sql.GetActual("Select count(*) from Information_Schema.Tables WHERE Table_Name = 'Test'");
 
