@@ -28,7 +28,7 @@ namespace SqlTest
             }
             catch(Exception e)
             {
-                throw new Exception( $"Error executing setup: {e.Message}. Statement: {sql}");
+                throw new Exception( $"Error executing Adhoc Sql: {e.Message}. Statement: {sql}");
             }
         }
 

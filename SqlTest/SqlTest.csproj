@@ -58,6 +58,8 @@
     <Compile Include="FakeView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sql.cs" />
+    <Compile Include="SqlTestServer.cs" />
+    <Compile Include="SqlTestTable.cs" />
     <Compile Include="Ssis.cs" />
   </ItemGroup>
   <ItemGroup>

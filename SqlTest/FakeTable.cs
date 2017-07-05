@@ -14,9 +14,9 @@ namespace SqlTest
 
         public static void CreateShell(string dbName, string schemaAndTableName, Boolean keepIdentity = false)
         {
-            Server server = GetServerName();
-            string schemaName = GetSchemaName(schemaAndTableName);
-            string tableName = GetTableName(schemaAndTableName);
+            Server server = SqlTestServer.GetServerName();
+            string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
+            string tableName = SqlTestTable.GetTableName(schemaAndTableName);
             Database database = server.Databases[dbName];
             Table tableToFake = database.Tables[tableName, schemaName];
             if(tableToFake == null)
@@ -58,9 +58,9 @@ namespace SqlTest
                 result = Sql.GetActual(getActualSql);
             }
 
-            Server server = GetServerName();
-            string schemaName = GetSchemaName(schemaAndTableName);
-            string tableName = GetTableName(schemaAndTableName);
+            Server server = SqlTestServer.GetServerName();
+            string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
+            string tableName = SqlTestTable.GetTableName(schemaAndTableName);
             Database database = server.Databases[dbName];
             database.Tables[tableName, schemaName].DropIfExists();
             database.Tables[$"{tableName}_Faked", schemaName].Rename(tableName);
@@ -68,38 +68,5 @@ namespace SqlTest
             return result;
         }
 
-        private static Server GetServerName()
-        {
-            try
-            {
-                string conn = ConfigurationManager.ConnectionStrings["testTarget"].ConnectionString;
-                OleDbConnectionStringBuilder sb = new OleDbConnectionStringBuilder(conn);
-                return new Server(sb.DataSource);
-            }
-            catch(NullReferenceException)
-            {
-                throw new NullReferenceException("App.Config setting not found 'testTarget', be sure to add this to connectionStrings.");
-            }
-        }
-
-        private static string GetSchemaName(string schemaAndTableName)
-        {
-            string[] schema = schemaAndTableName.Split('.');
-            if(schema.Count() == 1)
-            {
-                return "dbo";
-            }
-            return schema[0];
-        }
-
-        private static string GetTableName(string schemaAndTableName)
-        {
-            string[] table = schemaAndTableName.Split('.');
-            if (table.Count() == 1)
-            {
-                return table[0];
-            }
-            return table[1];
-        }
     }
 }
