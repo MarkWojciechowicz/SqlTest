@@ -27,12 +27,17 @@ namespace SqlTest.Tests
             }
         }
 
-        [Test]
-        public void FakeTable_ExecuteCreateShell_CreatesFakeTable()
+        [TestCase("Test", "Test_Faked")]
+        [TestCase("[Test]", "[Test_Faked]")]
+        [TestCase("dbo.Test", "dbo.Test_Faked")] 
+        [TestCase("sales.Customer", "sales.Customer_Faked")]
+        [TestCase("[sales].[Customer]", "[sales].[Customer_Faked]")]
+        [TestCase("[dbo].[Table With Spaces]", "[dbo].[Table With Spaces]")]
+        public void FakeTable_ExecuteCreateShell_CreatesFakeTable(string tableName, string fakeTableName)
         {
-            SqlTest.FakeTable.CreateShell("TestDB", "Test");
+            SqlTest.FakeTable.CreateShell("TestDB", tableName);
             Assert.DoesNotThrow(
-                delegate { SqlTest.Sql.ExecuteAdhoc($"Select 1 From dbo.Test_Faked;"); }
+                delegate { SqlTest.Sql.ExecuteAdhoc($"Select 1 From {fakeTableName};"); }
                 );
         }
 

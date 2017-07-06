@@ -10,22 +10,16 @@ namespace SqlTest
     {
         internal static string GetSchemaName(string schemaAndTableName)
         {
-            string[] schema = schemaAndTableName.Split('.');
-            if (schema.Count() == 1)
-            {
-                return "dbo";
-            }
-            return schema[0];
+            string[] schemas = schemaAndTableName.Split('.');
+            string schema = schemas.Count() == 1 ? "dbo" : schemas[0];
+            return schema.Replace("[", "").Replace("]", "");
         }
 
         internal static string GetTableName(string schemaAndTableName)
         {
-            string[] table = schemaAndTableName.Split('.');
-            if (table.Count() == 1)
-            {
-                return table[0];
-            }
-            return table[1];
+            string[] tables = schemaAndTableName.Split('.');
+            string table = tables.Count() == 1 ? tables[0] : tables[1];
+            return table.Replace("[", "").Replace("]", "");
         }
 
     }
