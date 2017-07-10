@@ -59,6 +59,7 @@ namespace SqlTest
         public static void InsertOneRow(string dbName, string schemaAndTable)
         {
             //TODO: Implement insert a row
+            throw new NotImplementedException();
         }
     }
 }

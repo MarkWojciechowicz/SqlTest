@@ -24,5 +24,17 @@ namespace SqlTest
                 throw new NullReferenceException("App.Config setting not found 'testTarget', be sure to add this to connectionStrings.");
             }
         }
+
+        internal static Server GetSsisServer()
+        {
+            try
+            {
+                return new Server(ConfigurationManager.AppSettings["ssisServer"]);
+            }
+            catch (NullReferenceException)
+            {
+                throw new NullReferenceException("App.Config setting not found 'ssisServer', be sure to add this to connectionStrings.");
+            }
+        }
     }
 }
