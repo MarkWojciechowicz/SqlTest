@@ -68,10 +68,10 @@
     <Compile Include="FakeTable.cs" />
     <Compile Include="FakeView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sql.cs" />
+    <Compile Include="SqlTestTarget.cs" />
     <Compile Include="SqlTestServer.cs" />
     <Compile Include="SqlTestTable.cs" />
-    <Compile Include="Ssis.cs" />
+    <Compile Include="SsisTestTarget.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -13,11 +13,13 @@ namespace Example
     public class Sql
     {
         TransactionScope scope;
+        SqlTestTarget dbUnderTest;
 
         [SetUp]
         public void Setup()
         {
             scope = new TransactionScope();
+            dbUnderTest = new SqlTestTarget("testTarget");
         }
 
         [TearDown]
@@ -33,9 +35,9 @@ namespace Example
         public void Sql_ExecuteSetup_TableCreated()
         {
             //Create table
-            SqlTest.Sql.ExecuteAdhoc($"Create table test(Id Int);");
+            dbUnderTest.ExecuteAdhoc($"Create table test(Id Int);");
 
-            var result = SqlTest.Sql.GetActual("Select count(*) from Information_Schema.Tables WHERE Table_Name = 'Test'");
+            var result = dbUnderTest.GetActual("Select count(*) from Information_Schema.Tables WHERE Table_Name = 'Test'");
 
             Assert.That(result, Is.EqualTo(1));
         }

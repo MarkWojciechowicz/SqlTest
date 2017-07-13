@@ -9,7 +9,7 @@ using System.IO;
 
 namespace SqlTest
 {
-    public class Ssis
+    public class SsisTestTarget
     {
         public string PackageFolder { get; set; }
         public string ProjectName { get; set; }
@@ -18,7 +18,7 @@ namespace SqlTest
         public string EnvironmentName { get; set; }
         bool HasFailed { get; set; }
 
-        public Ssis(string packageFolder, string projectName, bool useEnvironment, string environmentFolder = "", string environmentName = "")
+        public SsisTestTarget(string packageFolder, string projectName, bool useEnvironment, string environmentFolder = "", string environmentName = "")
         {
             this.PackageFolder = packageFolder;
             this.ProjectName = projectName;

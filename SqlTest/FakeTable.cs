@@ -50,12 +50,12 @@ namespace SqlTest
             fakeTable.Create();
         }
 
-        public static object Drop(string dbName, string schemaAndTableName, string getActualSql = "")
+        public static object Drop(SqlTestTarget testTarget, string dbName, string schemaAndTableName, string getActualSql = "")
         {
             object result =  "";
             if(!String.IsNullOrEmpty(getActualSql))
             {
-                result = Sql.GetActual(getActualSql);
+                result = testTarget.GetActual(getActualSql);
             }
 
             Server server = SqlTestServer.GetServerName();

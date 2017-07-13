@@ -5,19 +5,35 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.OleDb;
 using System.Configuration;
+using System.Reflection;
 
 namespace SqlTest
 {
-    public class Sql
+    public class SqlTestTarget
     {
-        public static void ExecuteAdhoc(string sql)
+        string connectionString { get; set; }
+
+        public SqlTestTarget(string connectionStringConfigName)
         {
             try
             {
-                //TODO: change way of getting configurations to support reference from dll
-                //TODO: add methods to get particular SQL Configs
-                //TODO:  conver sql to instance methods to support connection to different databases
-                OleDbConnection conn = new OleDbConnection(ConfigurationManager.ConnectionStrings["testTarget"].ConnectionString);
+                string exeConfigPath = System.Reflection.Assembly.GetCallingAssembly().Location;
+                var config = ConfigurationManager.OpenExeConfiguration(exeConfigPath);
+                var value = config.ConnectionStrings.ConnectionStrings[connectionStringConfigName].ConnectionString;
+                this.connectionString = String.IsNullOrEmpty(value) ? "" : value;
+            }
+
+            catch (NullReferenceException)
+            {
+                throw new NullReferenceException($"ConnectionString Setting not found in app.config: '{connectionStringConfigName}.'");
+            }
+        }
+
+        public void ExecuteAdhoc(string sql)
+        {
+            try
+            {
+                OleDbConnection conn = new OleDbConnection(this.connectionString);
                 OleDbCommand cmd = new OleDbCommand(sql, conn);
                 conn.Open();
                 using (cmd)
@@ -25,22 +41,19 @@ namespace SqlTest
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (NullReferenceException)
-            {
-                throw new NullReferenceException("App.Config setting not found 'testTarget', be sure to add this to connectionStrings.");
-            }
+            
             catch(Exception e)
             {
                 throw new Exception( $"Error executing Adhoc Sql: {e.Message}. Statement: {sql}");
             }
         }
 
-        public static object GetActual(string sql)
+        public object GetActual(string sql)
         {
             object result= "";
             try
             {
-                OleDbConnection conn = new OleDbConnection(ConfigurationManager.ConnectionStrings["testTarget"].ConnectionString);
+                OleDbConnection conn = new OleDbConnection(this.connectionString);
                 OleDbCommand cmd = new OleDbCommand(sql, conn);
                 conn.Open();
                 using (cmd)
@@ -48,10 +61,7 @@ namespace SqlTest
                     result = cmd.ExecuteScalar();
                 }
             }
-            catch (NullReferenceException)
-            {
-                throw new NullReferenceException("App.Config setting not found 'testTarget', be sure to add this to connectionStrings.");
-            }
+
             catch (Exception e)
             {
                 throw new Exception($"Error executing GetValue: {e.Message}. Statement: {sql}");
@@ -59,10 +69,12 @@ namespace SqlTest
             return result;
         }
 
-        public static void InsertOneRow(string dbName, string schemaAndTable)
+        public void InsertOneRow(string dbName, string schemaAndTable)
         {
             //TODO: Implement insert a row
             throw new NotImplementedException();
         }
+
+        
     }
 }

@@ -11,11 +11,13 @@ namespace SqlTest.Tests
     public class FakeView
     {
         TransactionScope scope;
+        SqlTest.SqlTestTarget testTarget;
 
         [SetUp]
         public void Setup()
         {
             scope = new TransactionScope();
+            testTarget = new SqlTest.SqlTestTarget("testTarget");
         }
 
         [TearDown]
@@ -32,7 +34,7 @@ namespace SqlTest.Tests
         {
             SqlTest.FakeView.Create("TestDB", "MyTests");
             Assert.DoesNotThrow(
-                delegate { SqlTest.Sql.ExecuteAdhoc($"Select 1 From dbo.MyTests_Faked;"); }
+                delegate { testTarget.ExecuteAdhoc($"Select 1 From dbo.MyTests_Faked;"); }
                 );
         }
 
@@ -42,7 +44,7 @@ namespace SqlTest.Tests
             SqlTest.FakeView.Create("TestDB", "MyTests");
             SqlTest.FakeView.Drop("TestDB", "MyTests");
             Assert.Throws(typeof(Exception),
-                delegate { SqlTest.Sql.ExecuteAdhoc($"Select 1 From dbo.MyTests_Faked;"); }
+                delegate { testTarget.ExecuteAdhoc($"Select 1 From dbo.MyTests_Faked;"); }
                 );
         }
 

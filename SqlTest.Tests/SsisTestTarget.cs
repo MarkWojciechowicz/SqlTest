@@ -9,19 +9,19 @@ using SqlTest;
 namespace SqlTest.Tests
 {
     [TestFixture]
-    public class Ssis
+    public class SsisTestTarget
     {
-        public SqlTest.Ssis ssisWithoutEnvironment;
-        public SqlTest.Ssis ssisWithEnvironment;
+        public SqlTest.SsisTestTarget ssisWithoutEnvironment;
+        public SqlTest.SsisTestTarget ssisWithEnvironment;
         [SetUp]
         public void Setup()
         {
-            ssisWithoutEnvironment = new SqlTest.Ssis(
+            ssisWithoutEnvironment = new SqlTest.SsisTestTarget(
                                         packageFolder: "ETL"
                                         , projectName: "SsisProjectDeployment"
                                         , useEnvironment: false);
 
-            ssisWithEnvironment = new SqlTest.Ssis(
+            ssisWithEnvironment = new SqlTest.SsisTestTarget(
                                         packageFolder: "ETL"
                                         , projectName: "SsisProjectDeployment"
                                         , useEnvironment: true
@@ -31,33 +31,33 @@ namespace SqlTest.Tests
         }
 
         [Test]
-        public void Ssis_ExecutePackageThatSucceedsWithoutEnvironment_Succeeds()
+        public void SsisTestTarget_ExecutePackageThatSucceedsWithoutEnvironment_Succeeds()
         {
             Assert.DoesNotThrow(delegate { ssisWithoutEnvironment.ExecutePackage("PackageThatSucceeds"); });
         }
 
         [Test]
-        public void Ssis_ExecutePackageThatFailsWithoutEnvironment_Fails()
+        public void SsisTestTarget_ExecutePackageThatFailsWithoutEnvironment_Fails()
         {
             Assert.Throws(typeof(Exception), 
                     delegate { ssisWithoutEnvironment.ExecutePackage("PackageThatFails"); });
         }
 
         [Test]
-        public void Ssis_ExecutePackageWithEnvironment_Succeeds()
+        public void SsisTestTarget_ExecutePackageWithEnvironment_Succeeds()
         {
             Assert.DoesNotThrow(delegate { ssisWithEnvironment.ExecutePackage("PackageWithEnvironment"); });
         }
 
         [Test]
-        public void Ssis_FailOnWarningTrue_PackageFails()
+        public void SsisTestTarget_FailOnWarningTrue_PackageFails()
         {
             Assert.Throws(typeof(Exception),
                     delegate { ssisWithEnvironment.ExecutePackage("PackageWithWarning", failOnWarning: true); });
         }
 
         [Test]
-        public void Ssis_FailOnWarningFalse_PackageSucceeds()
+        public void SsisTestTarget_FailOnWarningFalse_PackageSucceeds()
         {
             Assert.DoesNotThrow(delegate { ssisWithEnvironment.ExecutePackage("PackageWithWarning", failOnWarning: false); });
         }

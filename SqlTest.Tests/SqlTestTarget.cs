@@ -8,14 +8,16 @@ using System.Transactions;
 
 namespace SqlTest.Tests
 {
-    public class Sql
+    public class SqlTestTarget
     {
         TransactionScope scope;
+        SqlTest.SqlTestTarget testTarget;
 
         [SetUp]
         public void Setup()
         {
             scope = new TransactionScope();
+            testTarget = new SqlTest.SqlTestTarget("testTarget");
         }
 
         [TearDown]
@@ -28,24 +30,24 @@ namespace SqlTest.Tests
         }
 
         [Test]
-        public void Sql_ExecuteSetup_NoExceptionThrown()
+        public void SqlTestTarget_ExecuteSetup_NoExceptionThrown()
         {
-            SqlTest.Sql.ExecuteAdhoc($"Select 1;");
+            testTarget.ExecuteAdhoc($"Select 1;");
         }
 
         [Test]
-        public void Sql_ExecuteSetup_ExceptionThrown()
+        public void SqlTestTarget_ExecuteSetup_ExceptionThrown()
         {
             Assert.Throws(typeof(Exception),
-                delegate { SqlTest.Sql.ExecuteAdhoc($"Select 1/0;"); }
+                delegate { testTarget.ExecuteAdhoc($"Select 1/0;"); }
             );
         }
 
         [TestCase("Select 1 as MyInt", 1)]
         [TestCase("Select '1' as MyString", "1")]
-        public void Sql_ExecuteGetValue_ReturnsValue(string sql, object expected)
+        public void SqlTestTarget_ExecuteGetValue_ReturnsValue(string sql, object expected)
         {
-            var actual = SqlTest.Sql.GetActual(sql);
+            var actual = testTarget.GetActual(sql);
             Assert.That(actual, Is.EqualTo(expected));
         }
     }
