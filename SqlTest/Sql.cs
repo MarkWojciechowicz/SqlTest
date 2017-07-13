@@ -14,6 +14,9 @@ namespace SqlTest
         {
             try
             {
+                //TODO: change way of getting configurations to support reference from dll
+                //TODO: add methods to get particular SQL Configs
+                //TODO:  conver sql to instance methods to support connection to different databases
                 OleDbConnection conn = new OleDbConnection(ConfigurationManager.ConnectionStrings["testTarget"].ConnectionString);
                 OleDbCommand cmd = new OleDbCommand(sql, conn);
                 conn.Open();
