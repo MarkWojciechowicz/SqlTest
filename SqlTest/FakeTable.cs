@@ -12,12 +12,11 @@ namespace SqlTest
     public class FakeTable
     {
 
-        public static void CreateShell(string dbName, string schemaAndTableName, Boolean keepIdentity = false)
+        internal static void CreateShell(Server server, string databaseName, string schemaAndTableName, Boolean keepIdentity = false)
         {
-            Server server = SqlTestServer.GetServerName();
-            string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
+             string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
             string tableName = SqlTestTable.GetTableName(schemaAndTableName);
-            Database database = server.Databases[dbName];
+            Database database = server.Databases[databaseName];
             Table tableToFake = database.Tables[tableName, schemaName];
             if(tableToFake == null)
             {
@@ -50,22 +49,13 @@ namespace SqlTest
             fakeTable.Create();
         }
 
-        public static object Drop(SqlTestTarget testTarget, string dbName, string schemaAndTableName, string getActualSql = "")
+        internal static void Drop(Server server, string databaseName, string schemaAndTableName)
         {
-            object result =  "";
-            if(!String.IsNullOrEmpty(getActualSql))
-            {
-                result = testTarget.GetActual(getActualSql);
-            }
-
-            Server server = SqlTestServer.GetServerName();
             string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
             string tableName = SqlTestTable.GetTableName(schemaAndTableName);
-            Database database = server.Databases[dbName];
+            Database database = server.Databases[databaseName];
             database.Tables[tableName, schemaName].DropIfExists();
             database.Tables[$"{tableName}_Faked", schemaName].Rename(tableName);
-
-            return result;
         }
 
     }

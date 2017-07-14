@@ -9,24 +9,24 @@ namespace SqlTest
 {
     public class FakeView
     {
-        public static void Create(string dbName, string schemaAndVew)
+        internal static void Create(Server server, string databaseName, string schemaAndVew)
         {
-            Server server = SqlTestServer.GetServerName();
             string schemaName = SqlTestTable.GetSchemaName(schemaAndVew);
             string viewName = SqlTestTable.GetTableName(schemaAndVew);
-            Database database = server.Databases[dbName];
+            Database database = server.Databases[databaseName];
             View viewToBeFaked = database.Views[viewName, schemaName];
+
+            if (database.Tables[$"{viewName}_Faked", schemaName] != null)
+            {
+                Console.WriteLine($"View: {schemaAndVew} has already been faked, dropping and restoring...");
+                FakeView.Drop(server, databaseName, schemaAndVew);
+            }
+
             if (viewToBeFaked == null)
             {
-                if (database.Tables[$"{viewName}_Faked", schemaName] != null)
-                {
-                    throw new Exception($"View is already faked: {schemaAndVew}.  Rename original and drop fake.");
-                }
-                else
-                {
-                    throw new Exception($"View not found: {schemaAndVew}");
-                }
+                throw new Exception($"Error creating fake view:  View not found: {schemaAndVew}");
             }
+
             Table fakeTable = new Table(database, viewName, schemaName);
 
             foreach (Column column in viewToBeFaked.Columns)
@@ -38,12 +38,11 @@ namespace SqlTest
             fakeTable.Create();
         }
 
-        public static void Drop(string dbName, string schemaAndView)
+        internal static void Drop(Server server, string databaseName, string schemaAndView)
         {
-            Server server = SqlTestServer.GetServerName();
             string schemaName = SqlTestTable.GetSchemaName(schemaAndView);
             string viewName = SqlTestTable.GetTableName(schemaAndView);
-            Database database = server.Databases[dbName];
+            Database database = server.Databases[databaseName];
             database.Tables[viewName, schemaName].DropIfExists();
             database.Views[$"{viewName}_Faked", schemaName].Rename(viewName);
         }

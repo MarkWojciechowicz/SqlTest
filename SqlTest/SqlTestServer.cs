@@ -11,20 +11,6 @@ namespace SqlTest
 {
     class SqlTestServer
     {
-        internal static Server GetServerName()
-        {
-            try
-            {
-                string conn = ConfigurationManager.ConnectionStrings["testTarget"].ConnectionString;
-                OleDbConnectionStringBuilder sb = new OleDbConnectionStringBuilder(conn);
-                return new Server(sb.DataSource);
-            }
-            catch (NullReferenceException)
-            {
-                throw new NullReferenceException("App.Config setting not found 'testTarget', be sure to add this to connectionStrings.");
-            }
-        }
-
         internal static Server GetSsisServer()
         {
             try

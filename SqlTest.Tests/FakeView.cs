@@ -32,7 +32,7 @@ namespace SqlTest.Tests
         [Test]
         public void FakeView_ExecuteCreate_CreatesFakeView()
         {
-            SqlTest.FakeView.Create("TestDB", "MyTests");
+            testTarget.CreateFakeView("MyTests");
             Assert.DoesNotThrow(
                 delegate { testTarget.ExecuteAdhoc($"Select 1 From dbo.MyTests_Faked;"); }
                 );
@@ -41,8 +41,8 @@ namespace SqlTest.Tests
         [Test]
         public void FakeView_ExecuteDrop_DropsFakeView()
         {
-            SqlTest.FakeView.Create("TestDB", "MyTests");
-            SqlTest.FakeView.Drop("TestDB", "MyTests");
+            testTarget.CreateFakeView("MyTests");
+            testTarget.DropFakeView("MyTests");
             Assert.Throws(typeof(Exception),
                 delegate { testTarget.ExecuteAdhoc($"Select 1 From dbo.MyTests_Faked;"); }
                 );
