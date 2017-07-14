@@ -17,12 +17,14 @@ namespace SqlTest.Tests
         public void Setup()
         {
             ssisWithoutEnvironment = new SqlTest.SsisTestTarget(
-                                        packageFolder: "ETL"
+                                        ssisServerAppSetting: "ssisServer"                            
+                                        , packageFolder: "ETL"
                                         , projectName: "SsisProjectDeployment"
                                         , useEnvironment: false);
 
             ssisWithEnvironment = new SqlTest.SsisTestTarget(
-                                        packageFolder: "ETL"
+                                        ssisServerAppSetting: "ssisServer"
+                                        , packageFolder: "ETL"
                                         , projectName: "SsisProjectDeployment"
                                         , useEnvironment: true
                                         , environmentFolder: "ETL"

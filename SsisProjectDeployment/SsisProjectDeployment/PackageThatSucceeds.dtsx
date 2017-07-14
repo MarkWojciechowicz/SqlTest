@@ -11,8 +11,9 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="PackageThatSucceeds"
   DTS:PackageType="5"
-  DTS:VersionBuild="2"
-  DTS:VersionGUID="{0A724AD3-926B-47B3-A41E-66E0E654CD3B}">
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="3"
+  DTS:VersionGUID="{0AB70C00-4729-47A2-B808-835222AEBF3B}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -33,7 +34,7 @@
           Text="Deploy this project to a folder called ETL in the SSISDB catalog"
           ParentId="Package"
           FontInfo="{assembly:Null}"
-          Size="359,60"
+          Size="359,40"
           Id="af1b128a-6ad1-4af0-a8cc-b9a98c16346e"
           TopLeft="96.5,41" />
       </GraphLayout>

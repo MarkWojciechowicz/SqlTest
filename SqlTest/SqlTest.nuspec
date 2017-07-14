@@ -18,7 +18,8 @@
   </metadata>
   <files>
       <file src="**\bin\Release\*.dll" target="lib\net40\" />
-      <file src="content\*.transform" target="content" />
+	  <file src="content\*" exclude="*.pp" target="content" />
+	  <file src="content\*.pp" target="Samples" />
   </files>
   <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Transactions"  />

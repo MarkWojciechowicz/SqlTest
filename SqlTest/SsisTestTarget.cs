@@ -1,36 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.SqlServer.Management.IntegrationServices;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.IO;
+using System.Text;
+using Microsoft.SqlServer.Management.IntegrationServices;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace SqlTest
 {
     public class SsisTestTarget
     {
-        public string PackageFolder { get; set; }
-        public string ProjectName { get; set; }
-        public bool UseEnvironment { get; set; }
-        public string EnvironmentFolder { get; set; }
-        public string EnvironmentName { get; set; }
+        internal string PackageFolder { get; set; }
+        internal string ProjectName { get; set; }
+        internal bool UseEnvironment { get; set; }
+        internal string EnvironmentFolder { get; set; }
+        internal string EnvironmentName { get; set; }
+        internal Server SsisServer { get; set; }
         bool HasFailed { get; set; }
 
-        public SsisTestTarget(string packageFolder, string projectName, bool useEnvironment, string environmentFolder = "", string environmentName = "")
+
+        public SsisTestTarget(string ssisServerAppSetting, string packageFolder, string projectName, bool useEnvironment, string environmentFolder = "", string environmentName = "")
         {
-            this.PackageFolder = packageFolder;
-            this.ProjectName = projectName;
-            this.UseEnvironment = useEnvironment;
-            this.EnvironmentFolder = environmentFolder;
-            this.EnvironmentName = environmentName;
-            this.HasFailed = false;
+            try
+            {
+                string exeConfigPath = System.Reflection.Assembly.GetCallingAssembly().Location;
+                var config = ConfigurationManager.OpenExeConfiguration(exeConfigPath);
+                Server server = new Server(config.AppSettings.Settings[ssisServerAppSetting].Value.ToString());
+                this.SsisServer = server;
+                this.PackageFolder = packageFolder;
+                this.ProjectName = projectName;
+                this.UseEnvironment = useEnvironment;
+                this.EnvironmentFolder = environmentFolder;
+                this.EnvironmentName = environmentName;
+                this.HasFailed = false;
+            }
+
+            catch (NullReferenceException)
+            {
+                throw new NullReferenceException($"App.Config setting not found for '{ssisServerAppSetting}', be sure to add this to the AppSettings node.");
+            }
         }
 
         public static void ExecutePackage(FileInfo packagePath)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Sorry, did not get to this one yet.");
             //TODO: implement ExecutePackageFromFile
             /*
              * ProcessStartInfo info = new ProcessStartInfo();
@@ -53,7 +66,7 @@ namespace SqlTest
         {
             try
             {
-                IntegrationServices integrationServices = new IntegrationServices(SqlTestServer.GetSsisServer());
+                IntegrationServices integrationServices = new IntegrationServices(this.SsisServer);
                 PackageInfo package = GetPackage(integrationServices, packageName);
                 Collection<PackageInfo.ExecutionValueParameterSet> paramSet = new Collection<PackageInfo.ExecutionValueParameterSet>();
                 paramSet.Add(new PackageInfo.ExecutionValueParameterSet { ParameterName = "SYNCHRONIZED", ParameterValue = 1, ObjectType = 50 });
@@ -150,6 +163,7 @@ namespace SqlTest
             }
             return package.Parent.References[this.EnvironmentName, envFolder];
         }
+
     }
 }
 

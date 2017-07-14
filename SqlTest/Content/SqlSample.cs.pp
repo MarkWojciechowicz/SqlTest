@@ -8,11 +8,13 @@ namespace $rootnamespace$.Tests
     public class UnitUnderTest
     {
         TransactionScope scope;
+		SqlTest.SqlTestTarget dataWarehouseDb;
 
         [SetUp]
         public void Setup()
         {
             scope = new TransactionScope();
+			dataWarehouseDb = new SqlTest.SqlTestTarget("DataWarehouse");
         }
 
         [TearDown]
@@ -28,13 +30,13 @@ namespace $rootnamespace$.Tests
         public void UnitUnderTest_Action_ExpectedOutcome()
         {
             //Arrange
-            SqlTest.Sql.ExecuteAdhoc($"Truncate table / Insert test data;");
+            dataWarehouseDb.ExecuteAdhoc($"Truncate table / Insert test data;");
 
             //Act
-            SqlTest.Sql.ExecuteAdhoc($"Exec proc;");
+            dataWarehouseDb.ExecuteAdhoc($"Exec proc;");
 
             //Assert
-            var actual = SqlTest.Sql.GetActual("Select scalar value to test outcome");
+            var actual = dataWarehouseDb.GetActual("Select scalar value to test outcome");
             Assert.That(actual, Is.EqualTo("Expected Value"));
 
             //The teardown method runs after every test and will rollback all actions in one transaction
@@ -46,13 +48,13 @@ namespace $rootnamespace$.Tests
         public void UnitUnderTest_Action_ExpectedOutcome(string param, object expected)
         {
             //Arrange
-            SqlTest.Sql.ExecuteAdhoc($"Truncate table / Insert test data;");
+            dataWarehouseDb.ExecuteAdhoc($"Truncate table / Insert test data;");
 
             //Act
-            SqlTest.Sql.ExecuteAdhoc($"Exec proc @param = {param};");
+            dataWarehouseDb.ExecuteAdhoc($"Exec proc @param = {param};");
 
             //Assert
-            var actual = SqlTest.Sql.GetActual("Select to check result");
+            var actual = dataWarehouseDb.GetActual("Select to check result");
             Assert.That(actual, Is.EqualTo(expected));
         }
     }
