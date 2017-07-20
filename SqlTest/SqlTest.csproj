@@ -71,12 +71,14 @@
     <Compile Include="SqlTestTarget.cs" />
     <Compile Include="SqlTestTable.cs" />
     <Compile Include="SsisTestTarget.cs" />
+    <None Include="Wiki.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Content\App.config.uninstall.xdt" />
     <None Include="Content\App.config.transform" />
     <None Include="packages.config" />
+    <None Include="Readme.md" />
     <None Include="SqlTest.nuspec">
       <SubType>Designer</SubType>
     </None>

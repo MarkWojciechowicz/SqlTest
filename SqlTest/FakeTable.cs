@@ -8,21 +8,23 @@ namespace SqlTest
 
         internal static void CreateShell(Server server, string databaseName, string schemaAndTableName, Boolean keepIdentity = false)
         {
-             string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
+            string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
             string tableName = SqlTestTable.GetTableName(schemaAndTableName);
             Database database = server.Databases[databaseName];
             Table tableToFake = database.Tables[tableName, schemaName];
-            if(tableToFake == null)
+
+
+            if (database.Tables[$"{tableName}_Faked", schemaName] != null)
             {
-                if (database.Tables[$"{tableName}_Faked", schemaName] != null)
-                {
-                    throw new Exception($"Table already faked: {schemaAndTableName}.  Rename original and drop fake.");
-                }
-                else
-                {
-                    throw new Exception($"Table not found: {schemaAndTableName}");
-                }
+                Console.WriteLine($"Table: {tableName} has already been faked, dropping and restoring...");
+                FakeTable.Drop(server, databaseName, tableName);
             }
+
+            if (tableToFake == null)
+            {
+                throw new Exception($"Error creating fake table:  Table not found: {schemaAndTableName}");
+            }
+
             Table fakeTable = new Table(database, tableName, schemaName);
 
             foreach(Column column in tableToFake.Columns)
@@ -39,8 +41,16 @@ namespace SqlTest
                 }
                 fakeTable.Columns.Add(copyofCol);
             }
-            tableToFake.Rename($"{tableName}_Faked");
-            fakeTable.Create();
+
+            try
+            {
+                tableToFake.Rename($"{tableName}_Faked");
+                fakeTable.Create();
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Failed to create fake table '{schemaAndTableName}': {e.Message}");
+            }
         }
 
         internal static void Drop(Server server, string databaseName, string schemaAndTableName)

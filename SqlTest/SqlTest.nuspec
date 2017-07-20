@@ -10,18 +10,21 @@
     <projectUrl>https://github.com/MarkWojciechowicz/SqlTest</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Enabler library for sql and ssis unit testing</description>
-    <releaseNotes>Includes app.config</releaseNotes>
+    <releaseNotes>This release breaks how the methods are called by using instances rather than static methods and forcing calls through the renamed SqlTestTarget class
+          Still getting the knack of this nuget business.  This package has the correct dlls
+    </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <dependencies>
       <dependency id="nunit" version="3.7.1"/>
+      <dependency id="NUnit3TestAdapter" version="3.7.0"/>
     </dependencies>
+    <frameworkAssemblies>
+        <frameworkAssembly assemblyName="System.Transactions"  />
+    </frameworkAssemblies>
   </metadata>
   <files>
       <file src="**\bin\Release\*.dll" target="lib\net40\" />
-	  <file src="content\*" exclude="*.pp" target="content" />
-	  <file src="content\*.pp" target="Samples" />
+	  <file src="content\*" exclude="**\*.pp" target="content" />
+	  <file src="content\*.pp" target="Content\Samples" />
   </files>
-  <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Transactions"  />
-  </frameworkAssemblies>
 </package>
