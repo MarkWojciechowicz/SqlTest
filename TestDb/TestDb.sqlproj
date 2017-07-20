@@ -69,6 +69,8 @@
     <Build Include="sales\sales.sql" />
     <Build Include="sales\Tables\Customer.sql" />
     <Build Include="dbo\Tables\Table With Spaces.sql" />
+    <Build Include="TestLogin.sql" />
+    <Build Include="SqlUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestDb.publish.xml" />

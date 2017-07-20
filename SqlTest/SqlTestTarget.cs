@@ -2,6 +2,9 @@
 using System.Configuration;
 using System.Data.OleDb;
 using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.Common;
+using System.Data.SqlClient;
+using System.Collections.Generic;
 
 namespace SqlTest
 {
@@ -20,8 +23,8 @@ namespace SqlTest
                 var config = ConfigurationManager.OpenExeConfiguration(exeConfigPath);
                 var value = config.ConnectionStrings.ConnectionStrings[connectionStringConfigName].ConnectionString;
                 this.ConnectionString = String.IsNullOrEmpty(value) ? "" : value;
-                this.ConfigurationName = connectionStringConfigName;
-                this.TargetServer = new Server(GetConnectionStringProperty("Data Source"));
+                this.ConfigurationName = connectionStringConfigName;         
+                this.TargetServer = GetServer();
                 this.DatabaseName = GetConnectionStringProperty("Initial Catalog");
                
             }
@@ -82,7 +85,6 @@ namespace SqlTest
 
         internal string GetConnectionStringProperty(string property)
         {
-
             OleDbConnectionStringBuilder sb = new OleDbConnectionStringBuilder(this.ConnectionString);
             object value = null;
             if(!sb.TryGetValue(property, out value))
@@ -91,6 +93,31 @@ namespace SqlTest
             }
             return value.ToString();
 
+        }
+
+        internal Server GetServer()
+        {
+            try
+            {
+                string[] connectionString = this.ConnectionString.Split(';');
+                List<string> finalString = new List<string>();
+                foreach (string s in connectionString)
+                {
+                    if (!s.Contains("Provider"))
+                    {
+                        finalString.Add(s);
+                    }
+                }
+
+                SqlConnection sqlConn = new SqlConnection(String.Join(";", finalString));
+                ServerConnection serverConn = new ServerConnection(sqlConn);
+                return new Server(serverConn);
+            }
+
+            catch(Exception e)
+            {
+                throw new Exception($"Failed to create SMO Server.  The following error was thrown:  '{e.Message}'");
+            }
         }
 
         public void CreateFakeTableShell(string schemaAndTableName, Boolean keepIdentity = false)

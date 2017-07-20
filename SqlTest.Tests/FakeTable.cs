@@ -8,12 +8,14 @@ namespace SqlTest.Tests
     {
         TransactionScope scope;
         SqlTest.SqlTestTarget testTarget;
+        SqlTest.SqlTestTarget sqlUser;
 
         [SetUp]
         public void Setup()
         {
             scope = new TransactionScope();
             testTarget = new SqlTest.SqlTestTarget("testTarget");
+            sqlUser = new SqlTest.SqlTestTarget("sqlUser");
         }
 
         [TearDown]
@@ -88,6 +90,15 @@ namespace SqlTest.Tests
             var actual = testTarget.DropFakeTable("Test", "Select Id From Test");
             Assert.That(actual, Is.EqualTo(1));
 
+        }
+
+        [Test]
+        public void FakeTable_ExecuteCreateShellWithSqlAccount_OledbConvertedToSqlConnAndNoErrorThrown()
+        {
+           
+            Assert.DoesNotThrow(
+                delegate { sqlUser.CreateFakeTableShell("Test"); }
+                );
         }
     }
 }
