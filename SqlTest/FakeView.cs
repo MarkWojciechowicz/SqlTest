@@ -5,42 +5,68 @@ namespace SqlTest
 {
     public class FakeView
     {
-        internal static void Create(Server server, string databaseName, string schemaAndVew)
+        internal static void Create(Server server, string databaseName, string schemaAndView)
         {
-            string schemaName = SqlTestTable.GetSchemaName(schemaAndVew);
-            string viewName = SqlTestTable.GetTableName(schemaAndVew);
-            Database database = server.Databases[databaseName];
-            View viewToBeFaked = database.Views[viewName, schemaName];
-
-            if (database.Tables[$"{viewName}_Faked", schemaName] != null)
+            try
             {
-                Console.WriteLine($"View: {schemaAndVew} has already been faked, dropping and restoring...");
-                FakeView.Drop(server, databaseName, schemaAndVew);
-            }
+                string schemaName = SqlTestTable.GetSchemaName(schemaAndView);
+                string viewName = SqlTestTable.GetTableName(schemaAndView);
+                Database database = server.Databases[databaseName];
+                View viewToBeFaked = database.Views[viewName, schemaName];
 
-            if (viewToBeFaked == null)
+                if (database.Views[$"{viewName}_Faked", schemaName] != null)
+                {
+                    Console.WriteLine($"View: {schemaAndView} has already been faked, dropping and restoring...");
+                    FakeView.Drop(server, databaseName, schemaAndView);
+                }
+
+                if (viewToBeFaked == null)
+                {
+                    throw new Exception($"Error creating fake view:  View not found: {schemaAndView}");
+                }
+
+                Table fakeTable = new Table(database, viewName, schemaName);
+
+                foreach (Column column in viewToBeFaked.Columns)
+                {
+                    Column copyofCol = new Column(fakeTable, column.Name, column.DataType);
+                    fakeTable.Columns.Add(copyofCol);
+                }
+                viewToBeFaked.Rename($"{viewName}_Faked");
+                fakeTable.Create();
+            }
+            catch (Exception e)
             {
-                throw new Exception($"Error creating fake view:  View not found: {schemaAndVew}");
+                throw new Exception($"Error creating faked view '{schemaAndView}':  {e.Message}");
             }
-
-            Table fakeTable = new Table(database, viewName, schemaName);
-
-            foreach (Column column in viewToBeFaked.Columns)
-            {
-                Column copyofCol = new Column(fakeTable, column.Name, column.DataType);
-                fakeTable.Columns.Add(copyofCol);
-            }
-            viewToBeFaked.Rename($"{viewName}_Faked");
-            fakeTable.Create();
         }
+
 
         internal static void Drop(Server server, string databaseName, string schemaAndView)
         {
-            string schemaName = SqlTestTable.GetSchemaName(schemaAndView);
-            string viewName = SqlTestTable.GetTableName(schemaAndView);
-            Database database = server.Databases[databaseName];
-            database.Tables[viewName, schemaName].DropIfExists();
-            database.Views[$"{viewName}_Faked", schemaName].Rename(viewName);
+            try
+            {
+                string schemaName = SqlTestTable.GetSchemaName(schemaAndView);
+                string viewName = SqlTestTable.GetTableName(schemaAndView);
+                Database database = server.Databases[databaseName];
+
+                if (database.Tables[viewName, schemaName] == null)
+                {
+                    throw new NullReferenceException($"Error dropping fake view '{schemaAndView}':  Does not exist"); 
+                }
+                database.Tables[viewName, schemaName].DropIfExists();
+                database.Views[$"{viewName}_Faked", schemaName].Rename(viewName);
+            }
+
+            catch(NullReferenceException e)
+            {
+                throw e;    
+            }
+           
+            catch(Exception e)
+            {
+                throw new Exception($"Error dropping faked view '{schemaAndView}':  {e.Message}");
+            }
         }
     }
 }

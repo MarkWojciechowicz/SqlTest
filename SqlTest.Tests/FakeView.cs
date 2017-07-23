@@ -44,5 +44,11 @@ namespace SqlTest.Tests
                 );
         }
 
+        [Test]
+        public void FakeView_ViewDoesNotExist_ThrowsErrorWithContext()
+        {
+            var ex =  Assert.Throws<NullReferenceException>(delegate { testTarget.DropFakeView("NonExistingView"); });
+            Assert.That(ex.Message, Is.EqualTo("Error dropping fake view 'NonExistingView':  Does not exist"));
+        }
     }
 }
