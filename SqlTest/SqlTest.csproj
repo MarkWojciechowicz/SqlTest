@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>SqlTest.pfx</AssemblyOriginatorKeyFile>
@@ -83,6 +83,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="SqlTest.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\SqlTest.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
