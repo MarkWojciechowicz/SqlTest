@@ -8,10 +8,10 @@
     <owners>@wojo</owners>
     <licenseUrl>https://github.com/MarkWojciechowicz/SqlTest/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/MarkWojciechowicz/SqlTest</projectUrl>
+    <iconUrl>https://github.com/MarkWojciechowicz/SqlTest/tree/master/SqlTest/Content/SqlText.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Enabler library for sql and ssis unit testing</description>
-    <releaseNotes>This release breaks how the methods are called by using instances rather than static methods and forcing calls through the renamed SqlTestTarget class
-          Still getting the knack of this nuget business.  This package has the correct dlls
+    <releaseNotes>Fixed defect in which fake view was checking the wrong collection for existence.  Added nuget icon.  Added more test coverage.
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <dependencies>

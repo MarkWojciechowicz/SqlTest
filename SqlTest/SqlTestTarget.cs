@@ -10,7 +10,7 @@ namespace SqlTest
 {
     public class SqlTestTarget
     {
-        internal string ConnectionString { get; set; }
+        private string ConnectionString { get; set; }
         internal string ConfigurationName { get; set; }
         internal Server TargetServer { get; set; }
         internal string DatabaseName { get; set; }
@@ -22,10 +22,10 @@ namespace SqlTest
                 string exeConfigPath = System.Reflection.Assembly.GetCallingAssembly().Location;
                 var config = ConfigurationManager.OpenExeConfiguration(exeConfigPath);
                 var value = config.ConnectionStrings.ConnectionStrings[connectionStringConfigName].ConnectionString;
-                this.ConnectionString = String.IsNullOrEmpty(value) ? "" : value;
-                this.ConfigurationName = connectionStringConfigName;         
-                this.TargetServer = GetServer();
-                this.DatabaseName = GetConnectionStringProperty("Initial Catalog");
+                ConnectionString = String.IsNullOrEmpty(value) ? "" : value;
+                ConfigurationName = connectionStringConfigName;
+                TargetServer = GetServer();
+                DatabaseName = GetConnectionStringProperty("Initial Catalog");
                
             }
 
