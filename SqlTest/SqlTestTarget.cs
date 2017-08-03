@@ -122,17 +122,33 @@ namespace SqlTest
 
         public void CreateFakeTableShell(string schemaAndTableName, Boolean keepIdentity = false)
         {
-            FakeTable.CreateShell(this.TargetServer, this.DatabaseName, schemaAndTableName, keepIdentity);
+            try
+            {
+                FakeTable.CreateShell(this.TargetServer, this.DatabaseName, schemaAndTableName, keepIdentity);
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception($"CreateFakeTableShell failed for '{schemaAndTableName}' with the error: {e.Message}; Stacktace: {e.StackTrace}");
+            }
         }
 
         public object DropFakeTable(string schemaAndTableName, string getActualSql = "")
         {
             object result = "";
-            if (!String.IsNullOrEmpty(getActualSql))
+            try
             {
-                result = GetActual(getActualSql);
+                if (!String.IsNullOrEmpty(getActualSql))
+                {
+                    result = GetActual(getActualSql);
+                }
+                FakeTable.Drop(this.TargetServer, this.DatabaseName, schemaAndTableName);
             }
-            FakeTable.Drop(this.TargetServer, this.DatabaseName, schemaAndTableName);
+            catch (Exception e)
+            {
+
+                throw new Exception($"DropFakeTable failed for '{schemaAndTableName}' with the Error: {e.Message}; Stacktrace: '{e.StackTrace}'");
+            }
 
             return result;
         }

@@ -100,5 +100,27 @@ namespace SqlTest.Tests
                 delegate { sqlUser.CreateFakeTableShell("Test"); }
                 );
         }
+
+        [Test]
+        public void FakeTable_TableIsAlreadyFaked_FakeIsDroppedAndTableRenamed()
+        {
+            testTarget.CreateFakeTableShell("Test");
+            testTarget.CreateFakeTableShell("Test");
+
+            var actual = testTarget.GetActual("SELECT 1 FROM Information_Schema.Tables Where Table_Name = 'Test_Faked'");
+            Assert.That(actual, Is.EqualTo(1));
+        }
+
+        [TestCase("test")]
+        [TestCase("test_Faked")]
+        public void FakeTable_TableIsAlreadyFakedButFakeDoesNotExist_TableRenamedFakeCreated(String tableExists)
+        {
+            testTarget.CreateFakeTableShell("Test");
+            testTarget.ExecuteAdhoc("Drop table Test;");
+            testTarget.CreateFakeTableShell("Test");
+
+            var actual = testTarget.GetActual($"SELECT 1 FROM Information_Schema.Tables Where Table_Name = '{tableExists}'");
+            Assert.That(actual, Is.EqualTo(1));
+        }
     }
 }

@@ -11,8 +11,6 @@ namespace SqlTest
             string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
             string tableName = SqlTestTable.GetTableName(schemaAndTableName);
             Database database = server.Databases[databaseName];
-            Table tableToFake = database.Tables[tableName, schemaName];
-
 
             if (database.Tables[$"{tableName}_Faked", schemaName] != null)
             {
@@ -20,6 +18,7 @@ namespace SqlTest
                 FakeTable.Drop(server, databaseName, tableName);
             }
 
+            Table tableToFake = database.Tables[tableName, schemaName];
             if (tableToFake == null)
             {
                 throw new Exception($"Error creating fake table:  Table not found: {schemaAndTableName}");
@@ -55,11 +54,20 @@ namespace SqlTest
 
         internal static void Drop(Server server, string databaseName, string schemaAndTableName)
         {
-            string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
-            string tableName = SqlTestTable.GetTableName(schemaAndTableName);
-            Database database = server.Databases[databaseName];
-            database.Tables[tableName, schemaName].DropIfExists();
-            database.Tables[$"{tableName}_Faked", schemaName].Rename(tableName);
+
+            try
+            {
+                string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
+                string tableName = SqlTestTable.GetTableName(schemaAndTableName);
+                Database database = server.Databases[databaseName];
+                database.Tables[tableName, schemaName].DropIfExists();
+                database.Tables[$"{tableName}_Faked", schemaName].Rename(tableName);
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
         }
 
     }
