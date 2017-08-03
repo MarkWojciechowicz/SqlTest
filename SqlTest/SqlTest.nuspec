@@ -8,7 +8,7 @@
     <owners>@wojo</owners>
     <licenseUrl>https://github.com/MarkWojciechowicz/SqlTest/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/MarkWojciechowicz/SqlTest</projectUrl>
-    <iconUrl>https://github.com/MarkWojciechowicz/SqlTest/tree/master/SqlTest/Content/SqlText.png</iconUrl>
+    <iconUrl>https://github.com/MarkWojciechowicz/SqlTest/tree/master/SqlTest/Content/SqlTest.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Enabler library for sql and ssis unit testing</description>
     <releaseNotes>Fixed defect in which fake view was checking the wrong collection for existence.  Added nuget icon.  Added more test coverage.

@@ -86,7 +86,7 @@
     <None Include="SqlTest.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\SqlTest.png" />
+    <Content Include="SqlTest.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
