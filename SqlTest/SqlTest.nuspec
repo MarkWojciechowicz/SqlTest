@@ -8,7 +8,7 @@
     <owners>@wojo</owners>
     <licenseUrl>https://github.com/MarkWojciechowicz/SqlTest/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/MarkWojciechowicz/SqlTest</projectUrl>
-    <iconUrl>https://github.com/MarkWojciechowicz/SqlTest/tree/master/SqlTest/Content/SqlTest.png</iconUrl>
+    <iconUrl>https://github.com/MarkWojciechowicz/SqlTest/tree/master/SqlTest/SqlTest.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Sql and ssis unit testing enabler</description>
     <releaseNotes>Fixed handling for faking an already faked table.  Fixed reference to project png.
