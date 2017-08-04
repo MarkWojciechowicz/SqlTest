@@ -15,7 +15,7 @@ namespace SqlTest
             if (database.Tables[$"{tableName}_Faked", schemaName] != null)
             {
                 Console.WriteLine($"Table: {tableName} has already been faked, dropping and restoring...");
-                FakeTable.Drop(server, databaseName, tableName);
+                FakeTable.Drop(server, databaseName, schemaAndTableName);
             }
 
             Table tableToFake = database.Tables[tableName, schemaName];
@@ -66,7 +66,7 @@ namespace SqlTest
             catch (Exception e)
             {
 
-                throw e;
+                throw new Exception($"Drop table failed for Server: '{server.Name}', Database: '{databaseName}', Table: '{schemaAndTableName}' with the error: {e.Message}, Source: {e.Source}");
             }
         }
 

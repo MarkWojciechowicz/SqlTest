@@ -101,13 +101,14 @@ namespace SqlTest.Tests
                 );
         }
 
-        [Test]
-        public void FakeTable_TableIsAlreadyFaked_FakeIsDroppedAndTableRenamed()
+        [TestCase("test","test_faked")]
+        [TestCase("sales.Customer", "customer_Faked")]
+        public void FakeTable_TableIsAlreadyFaked_FakeIsDroppedAndTableRenamed(string table, string fakedName)
         {
-            testTarget.CreateFakeTableShell("Test");
-            testTarget.CreateFakeTableShell("Test");
+            testTarget.CreateFakeTableShell(table);
+            testTarget.CreateFakeTableShell(table);
 
-            var actual = testTarget.GetActual("SELECT 1 FROM Information_Schema.Tables Where Table_Name = 'Test_Faked'");
+            var actual = testTarget.GetActual($"SELECT 1 FROM Information_Schema.Tables Where Table_Name = '{fakedName}'");
             Assert.That(actual, Is.EqualTo(1));
         }
 
@@ -122,5 +123,8 @@ namespace SqlTest.Tests
             var actual = testTarget.GetActual($"SELECT 1 FROM Information_Schema.Tables Where Table_Name = '{tableExists}'");
             Assert.That(actual, Is.EqualTo(1));
         }
+
+
+
     }
 }
