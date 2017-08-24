@@ -124,7 +124,16 @@ namespace SqlTest.Tests
             Assert.That(actual, Is.EqualTo(1));
         }
 
+        [Test]
+        public void FakeTable_DropTableCalledTwice_SourceTableRetained()
+        {
+            testTarget.CreateFakeTableShell("Test");
+            testTarget.DropFakeTable("Test");
+            testTarget.DropFakeTable("Test");
 
+            var actual = testTarget.GetActual($"SELECT 1 FROM Information_Schema.Tables Where Table_Name = 'Test'");
+            Assert.That(actual, Is.EqualTo(1));
+        }
 
     }
 }

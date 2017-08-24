@@ -60,8 +60,11 @@ namespace SqlTest
                 string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
                 string tableName = SqlTestTable.GetTableName(schemaAndTableName);
                 Database database = server.Databases[databaseName];
-                database.Tables[tableName, schemaName].DropIfExists();
-                database.Tables[$"{tableName}_Faked", schemaName].Rename(tableName);
+                if (database.Tables[$"{tableName}_Faked", schemaName] != null)
+                {
+                    database.Tables[tableName, schemaName].DropIfExists();
+                    database.Tables[$"{tableName}_Faked", schemaName].Rename(tableName);
+                }
             }
             catch (Exception e)
             {
