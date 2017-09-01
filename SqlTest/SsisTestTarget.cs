@@ -89,14 +89,15 @@ namespace SqlTest
             catch (Exception e)
             {
                 StringBuilder errorMessage = new StringBuilder();
-                errorMessage.AppendLine($"An error was thrown while executing a package with the following parameters:");
+                errorMessage.AppendLine($"An error was thrown while executing a package:");
+                errorMessage.AppendLine($"Error: {e.Message}");
+                errorMessage.AppendLine($"The following parameters were used:");
                 errorMessage.AppendLine($"Folder: {this.PackageFolder}");
                 errorMessage.AppendLine($"Project: {this.ProjectName}");
                 errorMessage.AppendLine($"Package: {packageName}");
                 errorMessage.AppendLine($"Environment Folder: {this.EnvironmentFolder}");
                 errorMessage.AppendLine($"Environment: {this.EnvironmentName}");
                 errorMessage.AppendLine($"Fail on Warning: {failOnWarning}");
-                errorMessage.AppendLine($"Error Message: {e.Message}");
                 throw new Exception(errorMessage.ToString());
             }
         }
