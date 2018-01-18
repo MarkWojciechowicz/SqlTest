@@ -63,5 +63,11 @@ namespace SqlTest.Tests
         {
             Assert.DoesNotThrow(delegate { ssisWithEnvironment.ExecutePackage("PackageWithWarning", failOnWarning: false); });
         }
+        
+        [Test]
+        public void SsisTestTarget_PackageRunsLongerThan30s_Succeeds()
+        {
+            Assert.DoesNotThrow(delegate { ssisWithEnvironment.ExecutePackage("PackageRunsLongerThan30s"); });
+        }
     }
 }

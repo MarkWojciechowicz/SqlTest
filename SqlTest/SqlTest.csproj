@@ -49,8 +49,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files\Microsoft SQL Server\130\SDK\Assemblies\Microsoft.SqlServer.Smo.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.7.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.7.1\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.9.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.9.0\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -73,13 +74,13 @@
     <Compile Include="SqlTestTarget.cs" />
     <Compile Include="SqlTestTable.cs" />
     <Compile Include="SsisTestTarget.cs" />
+    <None Include="packages.config" />
     <None Include="Wiki.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Content\App.config.uninstall.xdt" />
     <None Include="Content\App.config.transform" />
-    <None Include="packages.config" />
     <None Include="Readme.md" />
     <None Include="SqlTest.nuspec">
       <SubType>Designer</SubType>

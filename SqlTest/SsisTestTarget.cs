@@ -17,6 +17,7 @@ namespace SqlTest
         internal string EnvironmentName { get; set; }
         internal Server SsisServer { get; set; }
         bool HasFailed { get; set; }
+        internal string Catalog { get; set; }
 
 
         public SsisTestTarget(string ssisServerAppSetting, string packageFolder, string projectName, bool useEnvironment, string environmentFolder = "", string environmentName = "")
@@ -33,6 +34,7 @@ namespace SqlTest
                 this.EnvironmentFolder = environmentFolder;
                 this.EnvironmentName = environmentName;
                 this.HasFailed = false;
+                this.Catalog = "SSISDB";
             }
 
             catch (NullReferenceException)
@@ -68,17 +70,21 @@ namespace SqlTest
             {
                 IntegrationServices integrationServices = new IntegrationServices(this.SsisServer);
                 PackageInfo package = GetPackage(integrationServices, packageName);
-                Collection<PackageInfo.ExecutionValueParameterSet> paramSet = new Collection<PackageInfo.ExecutionValueParameterSet>();
-                paramSet.Add(new PackageInfo.ExecutionValueParameterSet { ParameterName = "SYNCHRONIZED", ParameterValue = 1, ObjectType = 50 });
-
+                    
                 EnvironmentReference env = null;
                 if (this.UseEnvironment)
                 {
                     env = GetEnvironment(package);
                 }
-                long executionId = package.Execute(false, env, paramSet);
+                long executionId = package.Execute(false, env);
+                var execution = integrationServices.Catalogs[Catalog].Executions[executionId];
+                while(!execution.Completed)
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    execution.Refresh();
+                }
                 string errorsAndWarnings = GetMessages(integrationServices, executionId, failOnWarning);
-                var status = integrationServices.Catalogs["SSISDB"].Executions[executionId].Status;
+                var status = integrationServices.Catalogs[Catalog].Executions[executionId].Status;
 
                 if (this.HasFailed || status != Operation.ServerOperationStatus.Success)
                 {
@@ -105,7 +111,7 @@ namespace SqlTest
         private string GetMessages(IntegrationServices integrationServices, long executionId, bool failOnWarning)
         {
             StringBuilder messages = new StringBuilder();
-            foreach(var message in integrationServices.Catalogs["SSISDB"].Executions[executionId].Messages)
+            foreach(var message in integrationServices.Catalogs[Catalog].Executions[executionId].Messages)
             {
                 if(message.MessageType == 120)
                 {
@@ -131,21 +137,22 @@ namespace SqlTest
         private PackageInfo GetPackage(IntegrationServices ssis, string packageName)
         {
             string package = packageName.Contains(".dtsx") ? packageName : $"{packageName}.dtsx";
-            if(ssis.Catalogs["SSISDB"].Folders[this.PackageFolder] == null)
+     
+            if(ssis.Catalogs[Catalog].Folders[this.PackageFolder] == null)
             {
                 throw new Exception($"The folder '{this.PackageFolder}' was not found in the SSIS catalog.");
             }
 
-            if(ssis.Catalogs["SSISDB"].Folders[this.PackageFolder].Projects[this.ProjectName] == null)
+            if(ssis.Catalogs[Catalog].Folders[this.PackageFolder].Projects[this.ProjectName] == null)
             {
                 throw new Exception($"The project '{this.ProjectName}' was not found in the folder '{this.PackageFolder} in the SSIS Catalog");
             }
 
-            if(ssis.Catalogs["SSISDB"].Folders[this.PackageFolder].Projects[this.ProjectName].Packages[package] == null)
+            if(ssis.Catalogs[Catalog].Folders[this.PackageFolder].Projects[this.ProjectName].Packages[package] == null)
             {
                 throw new Exception($"The package '{package}' was not found in the project '{this.ProjectName}' in the SSIS Catalog");
             }
-            return ssis.Catalogs["SSISDB"].Folders[this.PackageFolder].Projects[this.ProjectName].Packages[package];
+            return ssis.Catalogs[Catalog].Folders[this.PackageFolder].Projects[this.ProjectName].Packages[package];
         }
 
         private EnvironmentReference GetEnvironment(PackageInfo package)
