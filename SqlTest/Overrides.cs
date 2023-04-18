@@ -8,7 +8,7 @@
             string value = "";
             foreach(var o in this.Override)
             {
-                if(o.ColumnName == columnName)
+                if(o.ColumnName.ToLower() == columnName.ToLower())
                 {  value = o.Value; break; }
             }
             return value;

@@ -159,10 +159,12 @@ namespace SqlTest.Tests
         }
 
         [TestCase("id", "id=4", 4)]
+        [TestCase("id", "ID=4", 4)]
+        [TestCase("id", "id =4", 4)]
         [TestCase("myCol", "myCol='x'", "x")]
         [TestCase("myCol", "myCol='x';myDate='1/1/1900'", "x")]
         [TestCase("id", "myCol='x';id=8", 8)]
-        public void InsertRows_UseColumnOVerrides_ColumnIsGivenValue(string column, string columnOverrides, object expected)
+        public void InsertRows_UseColumnOverrides_ColumnIsGivenValue(string column, string columnOverrides, object expected)
         {
             Target target = new("TestDb");
             StringBuilder sql = new();
