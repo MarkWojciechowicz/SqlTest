@@ -227,5 +227,35 @@ namespace SqlTest.Tests
             var actual = target.GetActual("SELECT myCol FROM dbo.DataTypeTest;");
             Assert.AreNotEqual(actual, expected);
         }
+
+        [Test]
+        public void InsertRows_TableHasComputedColumn_ColumnIsIngored()
+        {
+            Target target = new("TestDb");
+            var sql = @"DROP TABLE IF EXISTS dbo.ComputedColumn;
+                        CREATE TABLE dbo.ComputedColumn
+                        (
+                            id INT,
+	                        name AS ( id + 2)
+                        )";
+            target.ExecuteSql(sql.ToString());
+            Assert.DoesNotThrow(() => { target.InsertRows("ComputedColumn"); });
+        }
+
+        [Test]
+        public void InsertRows_TableHasComputedColumn_RowInserted()
+        {
+            Target target = new("TestDb");
+            var sql = @"DROP TABLE IF EXISTS dbo.ComputedColumn;
+                        CREATE TABLE dbo.ComputedColumn
+                        (
+                            id INT,
+	                        name AS ( id + 2)
+                        )";
+            target.ExecuteSql(sql.ToString());
+            target.InsertRows("ComputedColumn");
+            var actual = target.GetActual("SELECT COUNT(*) FROM dbo.ComputedColumn;");
+            Assert.That(actual, Is.EqualTo(1));
+        }
     }
 }

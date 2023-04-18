@@ -42,7 +42,7 @@ namespace SqlTest
             string comma = "";
             foreach(Column column in Table.Columns)
             {
-                if (!column.Identity)
+                if (!(column.Identity || column.Computed))
                 {
                     sql.AppendLine($"{comma} [{column.Name}]");
                     comma = ",";
@@ -52,7 +52,7 @@ namespace SqlTest
             comma = "";
             foreach (Column column in Table.Columns)
             {
-                if (!column.Identity)
+                if (!(column.Identity || column.Computed))
                 {
                     sql.AppendLine($"{comma} {GetValueforType(column)}");
                     comma = ",";
