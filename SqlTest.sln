@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlTest", "SqlTest\SqlTest.csproj", "{2E1749BC-B772-468E-9223-38130C11BDA2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlTest", "SqlTest\SqlTest.csproj", "{90D7D1B2-9050-4B3D-915A-C0D479B61584}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlTest.Tests", "SqlTest.Tests\SqlTest.Tests.csproj", "{A7BF1EE8-75DC-4123-80C3-9B05DB567EB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlTest.Tests", "..\..\..\Documents\dev\SqlTest\SqlTest.Tests\SqlTest.Tests.csproj", "{DFB038B5-0891-4578-B50C-6C23DE2E460F}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TestDb", "TestDb\TestDb.sqlproj", "{E84632BB-BD04-482E-8DFF-20415F7B5472}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TestDb", "..\..\..\Documents\dev\SqlTest\TestDb\TestDb.sqlproj", "{E84632BB-BD04-482E-8DFF-20415F7B5472}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,14 +15,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2E1749BC-B772-468E-9223-38130C11BDA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E1749BC-B772-468E-9223-38130C11BDA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E1749BC-B772-468E-9223-38130C11BDA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E1749BC-B772-468E-9223-38130C11BDA2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A7BF1EE8-75DC-4123-80C3-9B05DB567EB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A7BF1EE8-75DC-4123-80C3-9B05DB567EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A7BF1EE8-75DC-4123-80C3-9B05DB567EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A7BF1EE8-75DC-4123-80C3-9B05DB567EB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90D7D1B2-9050-4B3D-915A-C0D479B61584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90D7D1B2-9050-4B3D-915A-C0D479B61584}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90D7D1B2-9050-4B3D-915A-C0D479B61584}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90D7D1B2-9050-4B3D-915A-C0D479B61584}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFB038B5-0891-4578-B50C-6C23DE2E460F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFB038B5-0891-4578-B50C-6C23DE2E460F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFB038B5-0891-4578-B50C-6C23DE2E460F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFB038B5-0891-4578-B50C-6C23DE2E460F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E84632BB-BD04-482E-8DFF-20415F7B5472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E84632BB-BD04-482E-8DFF-20415F7B5472}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E84632BB-BD04-482E-8DFF-20415F7B5472}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
@@ -32,5 +32,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F7DC3E0C-48A3-4D05-A7B9-010EFB1E46BF}
 	EndGlobalSection
 EndGlobal

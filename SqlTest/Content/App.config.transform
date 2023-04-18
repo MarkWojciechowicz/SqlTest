@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <connectionStrings>
-    <add name="testTarget" connectionString="Data Source=localhost;Initial Catalog=DataWarehouse;Provider=sqloledb;Integrated Security=SSPI;"/>
-  </connectionStrings>
-  <appSettings>
-    <add key="ssisServer" value="localhost"/>
-  </appSettings>
-</configuration>

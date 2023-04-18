@@ -1,0 +1,5 @@
+﻿CREATE TABLE [dbo].[LogTable]
+(
+	[Id] INT NOT NULL PRIMARY KEY,
+	[LoadDate] DATETIME DEFAULT GETDATE() NOT NULL
+)

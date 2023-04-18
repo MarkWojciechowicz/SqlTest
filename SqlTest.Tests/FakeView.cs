@@ -1,54 +1,104 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System.Runtime.Versioning;
 using System.Transactions;
-using NUnit.Framework;
 
 namespace SqlTest.Tests
 {
+    [TestFixture]
     public class FakeView
     {
-        TransactionScope scope;
-        SqlTest.SqlTestTarget testTarget;
-
+        TransactionScope? scope;
+        [SupportedOSPlatform("windows")]
         [SetUp]
-        public void Setup()
+        public void SetUp()
         {
             scope = new TransactionScope();
-            testTarget = new SqlTest.SqlTestTarget("testTarget");
-        }
+            TransactionManager.ImplicitDistributedTransactions = true;
 
+        }
         [TearDown]
-        public void Teardown()
+        public void TearDown()
         {
-            if (Transaction.Current.TransactionInformation.Status == TransactionStatus.Active)
+            if (Transaction.Current != null && Transaction.Current.TransactionInformation.Status == TransactionStatus.Active)
             {
-                scope.Dispose();
+                if (scope != null)
+                {
+                    scope.Dispose();
+                }
             }
         }
 
         [Test]
-        public void FakeView_ExecuteCreate_CreatesFakeView()
+        public void FakeView_CreateFakeView_ViewRenamed()
         {
-            testTarget.CreateFakeView("MyTests");
+            Target target = new("TestDb");
+            target.CreateFakeView("MyTests");
+            var actual = target.GetActual($"SELECT COUNT(*) FROM sys.views WHERE name = 'MyTests_faked'");
+            Assert.That(actual, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void FakeView_CreateFakeView_TableIsCreated()
+        {
+            Target target = new("TestDb");
+            target.CreateFakeView("MyTests");
+            var actual = target.GetActual($"SELECT COUNT(*) FROM sys.tables WHERE name = 'MyTests'");
+            Assert.That(actual, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void FakeView_CreateFakeViewAlreadyExists_DoesNotThrowError()
+        {
+            Target target = new("TestDb");
             Assert.DoesNotThrow(
-                delegate { testTarget.ExecuteAdhoc($"Select 1 From dbo.MyTests_Faked;"); }
-                );
+                delegate
+                {
+                    target.CreateFakeView("MyTests");
+                    target.CreateFakeView("MyTests");
+                });
         }
 
         [Test]
-        public void FakeView_ExecuteDrop_DropsFakeView()
+        public void FakeView_CreateFakeViewInsertRow_RowIsInserted()
         {
-            testTarget.CreateFakeView("MyTests");
-            testTarget.DropFakeView("MyTests");
-            Assert.Throws(typeof(Exception),
-                delegate { testTarget.ExecuteAdhoc($"Select 1 From dbo.MyTests_Faked;"); }
-                );
+            Target target = new("TestDb");
+            target.CreateFakeView("MyTests");
+            target.ExecuteSql("INSERT INTO dbo.MyTests(Description) VALUES('test')");
+            var actual = target.GetActual($"SELECT Description FROM MyTests");
+            Assert.That(actual, Is.EqualTo("test"));
         }
 
         [Test]
-        public void FakeView_ViewDoesNotExist_ThrowsErrorWithContext()
+        public void FakeView_CreateFakeViewOverrideDatabase_ViewIsFaked()
         {
-            var ex =  Assert.Throws<NullReferenceException>(delegate { testTarget.DropFakeView("NonExistingView"); });
-            Assert.That(ex.Message, Is.EqualTo("Error dropping fake view 'NonExistingView':  Does not exist"));
+            string databaseOverride = "TestDb";
+            Target target = new("ConfigWithoutDatabase");
+            target.CreateFakeView("MyTests", databaseOverride);
+            var actual = target.GetActual($"SELECT COUNT(*) FROM sys.tables WHERE name = 'MyTests'", databaseOverride);
+            Assert.That(actual, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void FakeView_DropFakeView_ViewIsRestored()
+        {
+            Target target = new("TestDb");
+            target.CreateFakeView("MyTests");
+            target.DropFakeView("MyTests");
+            var actual = target.GetActual($"SELECT COUNT(*) FROM sys.views WHERE name = 'MyTests'");
+            Assert.That(actual, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void FakeView_DropFakeViewTwice_DoesNotThrowError()
+        {
+            Target target = new("TestDb");
+            target.CreateFakeView("MyTests");
+            Assert.DoesNotThrow(
+                delegate
+                {
+                    target.DropFakeView("MyTests");
+                    target.DropFakeView("MyTests");
+                });
         }
     }
 }

@@ -62,6 +62,7 @@
     <Folder Include="dbo\Views" />
     <Folder Include="sales" />
     <Folder Include="sales\Tables" />
+    <Folder Include="dbo\Functions" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Test.sql" />
@@ -71,6 +72,10 @@
     <Build Include="dbo\Tables\Table With Spaces.sql" />
     <Build Include="TestLogin.sql" />
     <Build Include="SqlUser.sql" />
+    <Build Include="dbo\Tables\LogTable.sql" />
+    <Build Include="dbo\Functions\GetLastLoadDate.sql" />
+    <Build Include="dbo\Functions\FunctionWithParameter.sql" />
+    <Build Include="dbo\Functions\TVF.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestDb.publish.xml" />

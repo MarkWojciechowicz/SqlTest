@@ -1,61 +1,65 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System.Runtime.Versioning;
 using System.Transactions;
-using NUnit.Framework;
 
 namespace SqlTest.Tests
 {
+    [TestFixture]
     public class FakeTable
     {
-        TransactionScope scope;
-        SqlTest.SqlTestTarget testTarget;
-        SqlTest.SqlTestTarget sqlUser;
-
+        TransactionScope? scope;
+        [SupportedOSPlatform("windows")]
         [SetUp]
-        public void Setup()
+        public void SetUp()
         {
             scope = new TransactionScope();
-            testTarget = new SqlTest.SqlTestTarget("testTarget");
-            sqlUser = new SqlTest.SqlTestTarget("sqlUser");
-        }
+            TransactionManager.ImplicitDistributedTransactions = true;
 
+        }
         [TearDown]
-        public void Teardown()
+        public void TearDown()
         {
-            if (Transaction.Current.TransactionInformation.Status == TransactionStatus.Active)
+            if (Transaction.Current != null && Transaction.Current.TransactionInformation.Status == TransactionStatus.Active)
             {
-                scope.Dispose();
+                if (scope != null)
+                {
+                    scope.Dispose();
+                }
             }
         }
 
-        [TestCase("Test", "Test_Faked")]
-        [TestCase("[Test]", "[Test_Faked]")]
-        [TestCase("dbo.Test", "dbo.Test_Faked")] 
-        [TestCase("sales.Customer", "sales.Customer_Faked")]
-        [TestCase("[sales].[Customer]", "[sales].[Customer_Faked]")]
-        [TestCase("[dbo].[Table With Spaces]", "[dbo].[Table With Spaces]")]
-        public void FakeTable_ExecuteCreateShell_CreatesFakeTable(string tableName, string fakeTableName)
+        [TestCase("Test", "Test_faked")]
+        [TestCase("[Test]", "[Test_faked]")]
+        [TestCase("dbo.Test", "dbo.Test_faked")]
+        [TestCase("sales.Customer", "sales.Customer_faked")]
+        [TestCase("[sales].[Customer]", "[sales].[Customer_faked]")]
+        [TestCase("[dbo].[Table With Spaces]", "[dbo].[Table With Spaces_faked]")]
+        public void FakeTable_CreateFakeTable_FakeTableExists(string tableName, string fakeTableName)
         {
-            testTarget.CreateFakeTableShell(tableName);
+            Target target = new("TestDb");
+            target.CreateFakeTable(tableName);
             Assert.DoesNotThrow(
-                delegate { testTarget.ExecuteAdhoc($"Select 1 From {fakeTableName};"); }
+                delegate { target.ExecuteSql($"Select 1 From {fakeTableName};"); }
                 );
         }
 
         [Test]
-        public void FakeTable_ExecuteCreateShell_FakeColumnsAreNullable()
+        public void FakeTable_CreateFakeTable_FakeColumnsAreNullable()
         {
-            testTarget.CreateFakeTableShell("Test");
+            Target target = new("TestDb");
+            target.CreateFakeTable("Test");
             Assert.DoesNotThrow(
-                delegate { testTarget.ExecuteAdhoc($"Insert into dbo.Test (Description) Values('Test');"); }
+                delegate { target.ExecuteSql($"Insert into dbo.Test (Description) Values('Test');"); }
                 );
         }
 
         [TestCase(true, true)]
         [TestCase(false, false)]
-        public void FakeTable_ExecuteCreateShell_IdentityHandledCorrectly(bool keepIdentity, bool expected)
+        public void FakeTable_CreateFakeTable_IdentityHandledCorrectly(bool keepIdentity, bool expected)
         {
-            testTarget.CreateFakeTableShell("HasIdentity", keepIdentity);    
-            var actual = testTarget.GetActual(@"SELECT c.is_identity 
+            Target target = new("TestDb");
+            target.CreateFakeTable("HasIdentity", keepIdentity: keepIdentity);
+            var actual = target.GetActual(@"SELECT c.is_identity 
                                                 FROM sys.all_columns c 
                                                     JOIN sys.objects o on c.object_id = o.object_id
                                                  WHERE o.name = 'HasIdentity'");
@@ -63,10 +67,11 @@ namespace SqlTest.Tests
         }
 
         [Test]
-        public void FakeTable_ExecuteCreateShell_DefaultConstraintIsKept()
+        public void FakeTable_CreateFakeTable_DefaultConstraintIsKept()
         {
-            testTarget.CreateFakeTableShell("HasDefault");
-            var actual = testTarget.GetActual(@"Declare @description as table (Description varchar(50));
+            Target target = new("TestDb");
+            target.CreateFakeTable("HasDefault");
+            var actual = target.GetActual(@"Declare @description as table (Description varchar(50));
                                                 Insert into dbo.HasDefault (ID)
 	                                                OUTPUT inserted.Description into @description (Description)
 	                                                Values(1) ;
@@ -77,38 +82,33 @@ namespace SqlTest.Tests
         [Test]
         public void FakeTable_ExecuteTableDrop_SourceTableIsRenamed()
         {
-            testTarget.CreateFakeTableShell("Test");
-            testTarget.DropFakeTable("Test");
-            Assert.Throws(typeof(Exception), delegate { testTarget.GetActual("SELECT 1 FROM Test_Faked;"); });
+            Target target = new("TestDb");
+            target.CreateFakeTable("Test");
+            target.DropFakeTable("Test");
+            Assert.Throws(typeof(Exception), delegate { target.ExecuteSql("SELECT 1 FROM Test_Faked;"); });
         }
 
         [Test]
         public void FakeTable_ExecuteTableDrop_ReturnsActualResult()
         {
-            testTarget.CreateFakeTableShell("Test");
-            testTarget.ExecuteAdhoc("Insert into Test (Id) Values (1);");
-            var actual = testTarget.DropFakeTable("Test", "Select Id From Test");
+            Target target = new("TestDb");
+            target.CreateFakeTable("Test");
+            target.ExecuteSql("Insert into Test (Id) Values (1);");
+            var actual = target.GetActual("Select Id From Test");
+            target.DropFakeTable("Test");
             Assert.That(actual, Is.EqualTo(1));
 
         }
 
-        [Test]
-        public void FakeTable_ExecuteCreateShellWithSqlAccount_OledbConvertedToSqlConnAndNoErrorThrown()
-        {
-           
-            Assert.DoesNotThrow(
-                delegate { sqlUser.CreateFakeTableShell("Test"); }
-                );
-        }
-
-        [TestCase("test","test_faked")]
+        [TestCase("test", "test_faked")]
         [TestCase("sales.Customer", "customer_Faked")]
         public void FakeTable_TableIsAlreadyFaked_FakeIsDroppedAndTableRenamed(string table, string fakedName)
         {
-            testTarget.CreateFakeTableShell(table);
-            testTarget.CreateFakeTableShell(table);
+            Target target = new("TestDb");
+            target.CreateFakeTable(table);
+            target.CreateFakeTable(table);
 
-            var actual = testTarget.GetActual($"SELECT 1 FROM Information_Schema.Tables Where Table_Name = '{fakedName}'");
+            var actual = target.GetActual($"SELECT 1 FROM Information_Schema.Tables Where Table_Name = '{fakedName}'");
             Assert.That(actual, Is.EqualTo(1));
         }
 
@@ -116,24 +116,25 @@ namespace SqlTest.Tests
         [TestCase("test_Faked")]
         public void FakeTable_TableIsAlreadyFakedButFakeDoesNotExist_TableRenamedFakeCreated(String tableExists)
         {
-            testTarget.CreateFakeTableShell("Test");
-            testTarget.ExecuteAdhoc("Drop table Test;");
-            testTarget.CreateFakeTableShell("Test");
+            Target target = new("TestDb");
+            target.CreateFakeTable("Test");
+            target.ExecuteSql("Drop table Test;");
+            target.CreateFakeTable("Test");
 
-            var actual = testTarget.GetActual($"SELECT 1 FROM Information_Schema.Tables Where Table_Name = '{tableExists}'");
+            var actual = target.GetActual($"SELECT 1 FROM Information_Schema.Tables Where Table_Name = '{tableExists}'");
             Assert.That(actual, Is.EqualTo(1));
         }
 
         [Test]
         public void FakeTable_DropTableCalledTwice_SourceTableRetained()
         {
-            testTarget.CreateFakeTableShell("Test");
-            testTarget.DropFakeTable("Test");
-            testTarget.DropFakeTable("Test");
+            Target target = new("TestDb");
+            target.CreateFakeTable("Test");
+            target.DropFakeTable("Test");
+            target.DropFakeTable("Test");
 
-            var actual = testTarget.GetActual($"SELECT 1 FROM Information_Schema.Tables Where Table_Name = 'Test'");
+            var actual = target.GetActual($"SELECT 1 FROM Information_Schema.Tables Where Table_Name = 'Test'");
             Assert.That(actual, Is.EqualTo(1));
         }
-
     }
 }

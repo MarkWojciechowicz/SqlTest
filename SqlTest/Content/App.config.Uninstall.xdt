@@ -1,9 +1,0 @@
-﻿<?xml version="1.0"?>
-<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
-  <connectStrings>
-    <add name="testTarget" xdt:Transform="Remove" xdt:Locator="Match(name)" />
-  </connectStrings>
-  <appSettings>
-    <add key="ssisServer" xdt:Transform="Remove" xdt:Locator="Match(name)" />
-  </appSettings>
-</configuration>

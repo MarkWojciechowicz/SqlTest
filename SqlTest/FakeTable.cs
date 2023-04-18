@@ -1,77 +1,67 @@
-﻿using System;
-using Microsoft.SqlServer.Management.Smo;
+﻿using Microsoft.SqlServer.Management.Smo;
+using NUnit.Framework;
 
 namespace SqlTest
 {
-    public class FakeTable
+    internal class FakeTable
     {
-
-        internal static void CreateShell(Server server, string databaseName, string schemaAndTableName, Boolean keepIdentity = false)
+        private string Name { get; set; }
+        private string Schema { get; set; }
+        private bool KeepIdentity { get; set; }
+        private bool Exists { get; set; }
+        private Database TargetDb { get; set; }
+        internal FakeTable(Server server, string database, string name, string schema, bool keepIdentity = false) 
         {
-            string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
-            string tableName = SqlTestTable.GetTableName(schemaAndTableName);
-            Database database = server.Databases[databaseName];
+            Name = name;
+            Schema = schema;
+            KeepIdentity = keepIdentity;
+            TargetDb = server.Databases[database]; 
+            Exists = TargetDb.Tables[$"{name}_faked", schema] != null;
+        }
 
-            if (database.Tables[$"{tableName}_Faked", schemaName] != null)
+        internal void Create() 
+        {
+            if (Exists)
             {
-                Console.WriteLine($"Table: {tableName} has already been faked, dropping and restoring...");
-                FakeTable.Drop(server, databaseName, schemaAndTableName);
+                TestContext.WriteLine($"The table '{Schema}.{Name}' was faked.  Undoing fake...");
+                this.Drop();
             }
 
-            Table tableToFake = database.Tables[tableName, schemaName];
+            Table tableToFake = TargetDb.Tables[Name, Schema];
             if (tableToFake == null)
             {
-                throw new Exception($"Error creating fake table:  Table not found: {schemaAndTableName}");
+                throw new Exception($"CreateFakeTable failed, table does not exist: '{Schema}.{Name}'");
             }
 
-            Table fakeTable = new Table(database, tableName, schemaName);
-
+            var fake = new Table(TargetDb, Name, Schema);
             foreach(Column column in tableToFake.Columns)
             {
-                Column copyofCol = new Column(fakeTable, column.Name, column.DataType);
-                if(keepIdentity)
+                var copyofCol = new Column(fake, column.Name, column.DataType);
+                if (KeepIdentity)
                 {
                     copyofCol.Identity = column.Identity;
                 }
                 if (column.DefaultConstraint != null)
                 {
-                    copyofCol.AddDefaultConstraint($"{column.DefaultConstraint.Name}_fake");
+                    copyofCol.AddDefaultConstraint($"{column.DefaultConstraint.Name}_faked");
                     copyofCol.DefaultConstraint.Text = column.DefaultConstraint.Text;
                 }
-                fakeTable.Columns.Add(copyofCol);
+                fake.Columns.Add(copyofCol);
             }
-
-            try
-            {
-                tableToFake.Rename($"{tableName}_Faked");
-                fakeTable.Create();
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Failed to create fake table '{schemaAndTableName}': {e.Message}");
-            }
+            tableToFake.Rename($"{Name}_faked");
+            fake.Create();
         }
 
-        internal static void Drop(Server server, string databaseName, string schemaAndTableName)
+        internal void Drop()
         {
-
-            try
+            if (TargetDb.Tables[$"{Name}_faked", Schema] != null)
             {
-                string schemaName = SqlTestTable.GetSchemaName(schemaAndTableName);
-                string tableName = SqlTestTable.GetTableName(schemaAndTableName);
-                Database database = server.Databases[databaseName];
-                if (database.Tables[$"{tableName}_Faked", schemaName] != null)
+                if (TargetDb.Tables[Name, Schema] != null)
                 {
-                    database.Tables[tableName, schemaName].DropIfExists();
-                    database.Tables[$"{tableName}_Faked", schemaName].Rename(tableName);
+                    TargetDb.Tables[Name, Schema].DropIfExists();
                 }
-            }
-            catch (Exception e)
-            {
-
-                throw new Exception($"Drop table failed for Server: '{server.Name}', Database: '{databaseName}', Table: '{schemaAndTableName}' with the error: {e.Message}, Source: {e.Source}");
+                TargetDb.Tables[$"{Name}_faked", Schema].Rename(Name);
             }
         }
-
     }
 }
