@@ -136,5 +136,23 @@ namespace SqlTest.Tests
             var actual = target.GetActual($"SELECT 1 FROM Information_Schema.Tables Where Table_Name = 'Test'");
             Assert.That(actual, Is.EqualTo(1));
         }
+
+        [Test]
+        public void FakeTable_FullTestExample_RowIsUpdated()
+        {
+            //arrange
+            Target target = new("TestDb");
+            target.CreateFakeTable("Customer");
+            target.ExecuteSql("Truncate Table Stage.Customer");
+            target.ExecuteSql("INSERT INTO dbo.Customer (Id, CustomerCode, Name) values (1, 'Cust123', 'Old Name')");
+            target.ExecuteSql("INSERT INTO Stage.Customer (CustomerCode, Name) values ('Cust123', 'New Name')");
+
+            //act
+            target.ExecuteSql("Exec Stage.Load_Customer");
+
+            //assert
+            var actual = target.GetActual($"SELECT Name FROM dbo.Customer");
+            Assert.That(actual, Is.EqualTo("New Name"));
+        }
     }
 }

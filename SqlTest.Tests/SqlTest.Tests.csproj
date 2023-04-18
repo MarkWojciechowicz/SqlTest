@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SqlTest\SqlTest.csproj" />
+    <ProjectReference Include="..\..\..\..\source\repos\SqlTest\SqlTest\SqlTest.csproj" />
   </ItemGroup>
 
   <ItemGroup>

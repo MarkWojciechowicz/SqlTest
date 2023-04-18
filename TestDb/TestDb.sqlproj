@@ -63,6 +63,9 @@
     <Folder Include="sales" />
     <Folder Include="sales\Tables" />
     <Folder Include="dbo\Functions" />
+    <Folder Include="dbo\Stage" />
+    <Folder Include="dbo\Stage\Tables" />
+    <Folder Include="dbo\Stage\Procs" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Test.sql" />
@@ -76,6 +79,10 @@
     <Build Include="dbo\Functions\GetLastLoadDate.sql" />
     <Build Include="dbo\Functions\FunctionWithParameter.sql" />
     <Build Include="dbo\Functions\TVF.sql" />
+    <Build Include="dbo\Tables\Customer.sql" />
+    <Build Include="dbo\Stage\Stage.sql" />
+    <Build Include="dbo\Stage\Tables\Customer.sql" />
+    <Build Include="dbo\Stage\Procs\Load_Customer.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestDb.publish.xml" />

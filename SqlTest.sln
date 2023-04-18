@@ -5,9 +5,9 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlTest", "SqlTest\SqlTest.csproj", "{90D7D1B2-9050-4B3D-915A-C0D479B61584}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlTest.Tests", "..\..\..\Documents\dev\SqlTest\SqlTest.Tests\SqlTest.Tests.csproj", "{DFB038B5-0891-4578-B50C-6C23DE2E460F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlTest.Tests", "SqlTest.Tests\SqlTest.Tests.csproj", "{4E3E2505-33BD-4103-AEBA-524770BEE0EF}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TestDb", "..\..\..\Documents\dev\SqlTest\TestDb\TestDb.sqlproj", "{E84632BB-BD04-482E-8DFF-20415F7B5472}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TestDb", "TestDb\TestDb.sqlproj", "{E84632BB-BD04-482E-8DFF-20415F7B5472}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,10 @@ Global
 		{90D7D1B2-9050-4B3D-915A-C0D479B61584}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90D7D1B2-9050-4B3D-915A-C0D479B61584}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90D7D1B2-9050-4B3D-915A-C0D479B61584}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DFB038B5-0891-4578-B50C-6C23DE2E460F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DFB038B5-0891-4578-B50C-6C23DE2E460F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DFB038B5-0891-4578-B50C-6C23DE2E460F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DFB038B5-0891-4578-B50C-6C23DE2E460F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E3E2505-33BD-4103-AEBA-524770BEE0EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E3E2505-33BD-4103-AEBA-524770BEE0EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E3E2505-33BD-4103-AEBA-524770BEE0EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E3E2505-33BD-4103-AEBA-524770BEE0EF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E84632BB-BD04-482E-8DFF-20415F7B5472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E84632BB-BD04-482E-8DFF-20415F7B5472}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E84632BB-BD04-482E-8DFF-20415F7B5472}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
