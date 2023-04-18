@@ -16,7 +16,7 @@ Create a .net core class library. Install SqlTest nuget package: (https://www.nu
  - [NUnit3TestAdapter](https://www.nuget.org/packages/NUnit3TestAdapter/4.5.0-alpha.4)
  - [Microsoft.NET.Test.Sdk](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk)
 
-Add an appsettings.json file in the following form to set connection properties for the target database:
+Add an appsettings.json file and set the `Copy to output directory` property to `Copy always`.  The file should be in the following form to set connection properties for the target database:
 ```
 {
   "Targets": {
