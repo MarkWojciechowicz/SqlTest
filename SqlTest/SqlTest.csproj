@@ -7,12 +7,14 @@
     <PackageIcon>images\SqlTest.png</PackageIcon>
     <PackageReadmeFile>docs\README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/MarkWojciechowicz/SqlTest</RepositoryUrl>
-    <Version>2.0.1</Version>
-    <PackageReleaseNotes>Fixed insert failing for computed columns </PackageReleaseNotes>
+    <Version>2.0.3</Version>
+    <PackageReleaseNotes>Updated build to include method documentation</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>2023</Copyright>
     <PackageProjectUrl>https://www.nuget.org/packages/SqlTest/</PackageProjectUrl>
     <Description>SqlTest is a .Net Core library which provides scaffolding to write tests for SQL Server projects.</Description>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <PackageTags>sql;unittest</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

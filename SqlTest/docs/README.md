@@ -38,9 +38,11 @@ Add an appsettings.json file and set the `Copy to output directory` property to 
 ```
 
 ## Example
-The following example shows a SQL Test class. Note that the setup and teardown methods are used to create and rollback each test in a transaction. This is a function of the test harness (nunit) which will call the setup method before each test and the teardown after each test. Because tests are rolled back, they can be written in a destructive way in order to create a consistent setup - truncating or faking tables and views and inserting data.
+The following example shows a SQL Test class. Note that the setup and teardown methods are used to create and rollback each test in a transaction. This is a function of the test harness (nunit) which will call the setup method before each test and the teardown after each test. Because tests are rolled back, they can be written in a destructive way in order to create a consistent setup - truncating or faking tables and views and inserting data.  
 
-All that said, **use with caution**.  This is best applied to a local database that can be rebuilt as needed.  Failures in test code can leave things in an undesired state.
+In the case of integration testing, we would not wrap tests in a transaction, but drop faked objects in the TearDown after the integration work has been performed.
+
+**Use With Caution:** This is best applied to a local database that can be rebuilt as needed.  Failures in test code can leave things in an undesired state.
 
 ```
 using NUnit.Framework;
@@ -50,7 +52,7 @@ using System.Transactions;
 namespace SqlTest.Tests
 {
     [TestFixture]
-    public class FakeView
+    public class LoadCustomerTests
     {
         TransactionScope? scope;
         [SupportedOSPlatform("windows")]
